@@ -1,0 +1,207 @@
+   CREATE TABLE Departamentos (
+  ID_Departamento_Pk NCHAR(10) PRIMARY KEY,
+  Nombre_Depto VARCHAR(50)
+);
+
+CREATE TABLE Municipios (
+    ID_Municipio_Pk NCHAR(10) PRIMARY KEY,
+    Nombre_Municipio VARCHAR(50),
+    ID_Departamento_Fk NCHAR(10) REFERENCES Departamentos(ID_Departamento_Pk)
+);
+
+CREATE TABLE Colonia (
+    ID_Colonia_Pk NCHAR(10) PRIMARY KEY,
+    Nombre_Colonia VARCHAR(50),
+    ID_Municipio_Fk NCHAR(10) REFERENCES Municipios(ID_Municipio_Pk)
+);
+
+CREATE TABLE Sucursal (
+   ID_Sucursal_Pk NCHAR(10) PRIMARY KEY,
+   Nombre_Sucursal VARCHAR(20),
+   ID_colonia_Fk NCHAR(10) REFERENCES Colonia(ID_Colonia_Pk),
+   Abreviatura nchar(2)
+);
+
+CREATE TABLE Transmision (
+  ID_Transmision_Pk NCHAR(10) PRIMARY KEY,
+  Tipo_Transmision VARCHAR(50)
+);
+
+CREATE TABLE Version (
+  ID_Version_Pk NCHAR(10) PRIMARY KEY,
+  Nombre_Version VARCHAR(50),
+  Anio NCHAR(10)
+);
+
+CREATE TABLE Combustible (
+  ID_Combustible_Pk NCHAR(10) PRIMARY KEY,
+  Tipo_Combustible VARCHAR(50)
+);
+
+CREATE TABLE Modelo (
+  ID_Modelo_Pk NCHAR(10) PRIMARY KEY,
+  Nombre_Modelo VARCHAR(150)
+);
+
+CREATE TABLE Tipo_Vehiculo (
+  ID_Tipo_Vehiculo_Pk NCHAR(10) PRIMARY KEY,
+  Nombre_Tipo_Vehiculo VARCHAR(50)
+);
+
+CREATE TABLE Marca (
+    ID_Marca_Pk Nchar(10) PRIMARY KEY,
+    Nombre_Marca Varchar(50)
+);
+
+CREATE TABLE Vehiculo(
+    ID_Vehiculo_Pk NCHAR(10) PRIMARY KEY,
+    Transmision_Fk NCHAR(10) REFERENCES Transmision(ID_Transmision_Pk),
+    Combustible_Fk NCHAR(10) REFERENCES Combustible(ID_Combustible_Pk),
+    Version_Fk NCHAR(10) REFERENCES Version(ID_Version_Pk),
+    Modelo_Fk NCHAR(10) REFERENCES Modelo(ID_Modelo_Pk),
+    Tipo_Vehiculo_Fk NCHAR(10) REFERENCES Tipo_Vehiculo(ID_Tipo_Vehiculo_Pk),
+    Precio_Seguro FLOAT(10),
+    ID_Marca_Fk NCHAR(10) REFERENCES Marca(ID_Marca_Pk),
+    Costo_Diario FLOAT(10),
+    Numero_Puertas INT
+);
+
+
+CREATE TABLE Flota(
+    Matricula_Pk NCHAR(10) PRIMARY KEY,
+    Disponibilidad CHAR(1),
+    GPS VARCHAR(50) UNIQUE,
+    Color VARCHAR(10),
+    Direccion_Almacen VARCHAR(150),
+    Fecha_Ingreso Date, 	
+    ID_Sucursal_Fk NCHAR(10) REFERENCES Sucursal(ID_Sucursal_Pk),
+    ID_Vehiculo_Fk NCHAR(10) REFERENCES Vehiculo(ID_Vehiculo_Pk)
+);
+
+CREATE TABLE Tipo_Servicio_Adicional (
+  ID_Tipo_Servicio_Adicional_Pk NCHAR(10) PRIMARY KEY,
+  Nombre_Tipo_Servicio VARCHAR(150),
+  Costo FLOAT(10),
+  Descripcion VARCHAR(150)
+);
+
+CREATE TABLE Persona (
+  DNI_Persona_Pk NCHAR(13) PRIMARY KEY,
+  P_Nombre VARCHAR(25),
+  S_Nombre VARCHAR(25),
+  P_Apellido VARCHAR(25),
+  S_Apellido VARCHAR(25),
+  Fecha_Nacimiento DATE,
+  Telefono_Primario NCHAR(8),
+  Telefono_Secundario NCHAR(8),
+  Correo_Principal VARCHAR(50),
+  Correo_Secundario VARCHAR(50),
+  ID_Colonia_Fk NCHAR(10) REFERENCES Colonia(ID_Colonia_Pk)
+);
+
+CREATE TABLE Estado_Vehiculo (
+    ID_Estado_Vehiculo_Pk NCHAR(10) PRIMARY KEY,
+    Tipo_Estado VARCHAR(20)
+);
+
+
+CREATE TABLE Estado_Reservacion (
+    ID_Estado_Reservacion_Pk NCHAR(10) PRIMARY KEY,
+    Tipo_Estado NCHAR(10)
+);
+
+CREATE TABLE Cargo (
+  ID_Cargo_Pk NCHAR(10) PRIMARY KEY,
+  NombreCargo VARCHAR(150)
+);
+
+CREATE TABLE Empleado (
+  ID_Empleado_Pk NCHAR(10) PRIMARY KEY,
+  ID_Cargo_Fk NCHAR(10) REFERENCES Cargo(ID_Cargo_Pk),
+  Sueldo FLOAT(10),
+  DNI_Persona_Fk NCHAR(13) REFERENCES Persona(DNI_Persona_Pk),
+  Fecha_Ingreso DATE,
+  contrasenia varchar(20)
+);
+
+
+CREATE TABLE Cliente (
+  ID_Cliente_Pk NCHAR(10) PRIMARY KEY,
+  DNI_Persona_Fk NCHAR(13) REFERENCES Persona(DNI_Persona_Pk)
+);
+
+CREATE TABLE Conductor (
+  ID_Conductor_Pk NCHAR(10) PRIMARY KEY,
+  DNI_Persona_Fk NCHAR(13) REFERENCES Persona(DNI_Persona_Pk)
+);
+
+
+CREATE TABLE Reservacion (
+    ID_Reservacion_Pk NCHAR(10) PRIMARY KEY,
+    ID_Cliente_Fk NCHAR(10) REFERENCES Cliente(ID_Cliente_Pk),
+    Deposito FLOAT(10),
+    ID_Sucursal_Devolucion_Fk NCHAR(10) REFERENCES Sucursal(ID_Sucursal_Pk),
+    ID_Sucursal_Retiro_Fk NCHAR(10) REFERENCES Sucursal(ID_Sucursal_Pk),
+    Fecha_Retiro DATE,
+    Fecha_Devolucion DATE,
+    ID_estado_Reservacion_Fk NCHAR(10) REFERENCES Estado_Reservacion(ID_estado_Reservacion_Pk)
+);
+
+CREATE TABLE Detalle_Reservacion (
+  ID_Reservacion_Fk NCHAR(10) REFERENCES Reservacion(ID_Reservacion_Pk),
+  ID_Matricula_Flota_Fk NCHAR(10) REFERENCES Flota(Matricula_Pk),
+  ID_Conductor_Fk NCHAR(10) REFERENCES Conductor(ID_Conductor_Pk),
+  ID_Estado_Vehiculo_Fk nchar(10) references Estado_Vehiculo(ID_Estado_Vehiculo_Pk)
+  
+);
+
+CREATE TABLE Factura (
+    ID_Factura_Pk NCHAR(10) PRIMARY KEY,
+    Dias_Retraso INT,
+    Fecha_Emision DATE,
+    ID_Reservacion_Fk NCHAR(10) REFERENCES Reservacion(ID_Reservacion_Pk),
+    Total FLOAT(10),
+    Devolucion_deposito FLOAT(10),
+    Cargo_combustible FLOAT(10)
+);
+
+CREATE TABLE Detalle_Factura (
+    ID_Factura_Fk NCHAR(10) REFERENCES Factura(ID_Factura_Pk),
+    ID_Matricula_Flota_Fk NCHAR(10) REFERENCES Flota(Matricula_Pk)
+);
+
+
+CREATE TABLE Servicios_Adicionales(
+ID_Tipo_Servicio_Adicional_FK nchar(10) references Tipo_Servicio_Adicional(ID_Tipo_Servicio_Adicional_Pk),
+ID_Reservacion_Fk nchar(10) references Reservacion(ID_Reservacion_Pk),
+Cantidad int 
+);
+
+INSERT INTO "HERTZ_DEV"."DEPARTAMENTOS" (ID_DEPARTAMENTO_PK, NOMBRE_DEPTO) VALUES (N'1', 'FRANCISCO MORAZAN');
+INSERT INTO "HERTZ_DEV"."DEPARTAMENTOS" (ID_DEPARTAMENTO_PK, NOMBRE_DEPTO) VALUES (N'2', 'CORTES');
+
+INSERT INTO "HERTZ_DEV"."MUNICIPIOS" (ID_MUNICIPIO_PK, NOMBRE_MUNICIPIO, ID_DEPARTAMENTO_FK) VALUES (N'1', 'TEGUCIGALPA', N'1');
+INSERT INTO "HERTZ_DEV"."MUNICIPIOS" (ID_MUNICIPIO_PK, NOMBRE_MUNICIPIO, ID_DEPARTAMENTO_FK) VALUES (N'2', 'SAN PEDRO SULA', N'2');
+
+INSERT INTO "HERTZ_DEV"."COLONIA" (ID_COLONIA_PK, NOMBRE_COLONIA, ID_MUNICIPIO_FK) VALUES (N'1', 'HATO DE ENMEDIO', N'1');
+INSERT INTO "HERTZ_DEV"."COLONIA" (ID_COLONIA_PK, NOMBRE_COLONIA, ID_MUNICIPIO_FK) VALUES (N'2', '21 DE SEPTIEMBRE', N'1');
+INSERT INTO "HERTZ_DEV"."COLONIA" (ID_COLONIA_PK, NOMBRE_COLONIA, ID_MUNICIPIO_FK) VALUES (N'3', 'CERRO GRANDE', N'1');
+INSERT INTO "HERTZ_DEV"."COLONIA" (ID_COLONIA_PK, NOMBRE_COLONIA, ID_MUNICIPIO_FK) VALUES (N'4', 'CENTRO AMERICA', N'1');
+
+INSERT INTO "HERTZ_DEV"."PERSONA" (DNI_PERSONA_PK, P_NOMBRE,  S_NOMBRE, P_APELLIDO, S_APELLIDO, FECHA_NACIMIENTO, TELEFONO_PRIMARIO, CORREO_PRINCIPAL, ID_COLONIA_FK) VALUES (N'0801200110655', 'LUIS', 'LAINEZ', 'GERARDO', 'ZERON', TO_DATE('2001-05-31 20:49:59', 'YYYY-MM-DD HH24:MI:SS'), N'99999988', 'LUISGLAINEZ@GMAIL.COM', N'1');
+INSERT INTO "HERTZ_DEV"."PERSONA" (DNI_PERSONA_PK, P_NOMBRE,  S_NOMBRE, P_APELLIDO, S_APELLIDO, FECHA_NACIMIENTO, TELEFONO_PRIMARIO, CORREO_PRINCIPAL, ID_COLONIA_FK) VALUES (N'0801200114133', 'KEVIN', 'PONCE', 'ALEJANDRO', 'ESTRADA', TO_DATE('2016-04-15 20:52:05', 'YYYY-MM-DD HH24:MI:SS'), N'88779900', 'KEVINPONCE@GMAIL.COM', N'1');
+INSERT INTO "HERTZ_DEV"."PERSONA" (DNI_PERSONA_PK, P_NOMBRE,  S_NOMBRE, P_APELLIDO, S_APELLIDO, FECHA_NACIMIENTO, TELEFONO_PRIMARIO, CORREO_PRINCIPAL, ID_COLONIA_FK) VALUES (N'0801200001347', 'JEZER', 'PADILLA', 'NOE', 'DIAZ', TO_DATE('2001-04-20 20:53:59', 'YYYY-MM-DD HH24:MI:SS'), N'11223344', 'JEZERPADILLA@GMAIL.COM', N'1');
+
+INSERT INTO "HERTZ_DEV"."CARGO" (ID_CARGO_PK, NOMBRECARGO) VALUES (N'1', 'VENDEDOR');
+INSERT INTO "HERTZ_DEV"."CARGO" (ID_CARGO_PK, NOMBRECARGO) VALUES (N'2', 'ALMACEN');
+INSERT INTO "HERTZ_DEV"."CARGO" (ID_CARGO_PK, NOMBRECARGO) VALUES (N'3', 'GERENTE');
+
+INSERT INTO "HERTZ_DEV"."EMPLEADO" (ID_EMPLEADO_PK, ID_CARGO_FK, SUELDO, DNI_PERSONA_FK, FECHA_INGRESO, CONTRASENIA) VALUES (N'L015LANZ', N'3', '15000', N'0801200110655', TO_DATE('2021-04-24 21:02:03', 'YYYY-MM-DD HH24:MI:SS'), 'NINGUNA');
+INSERT INTO "HERTZ_DEV"."EMPLEADO" (ID_EMPLEADO_PK, ID_CARGO_FK, SUELDO, DNI_PERSONA_FK, FECHA_INGRESO, CONTRASENIA) VALUES (N'JEZN32', N'2', '16000', N'0801200001347', TO_DATE('2022-04-29 21:03:04', 'YYYY-MM-DD HH24:MI:SS'), 'NINGUNA');
+INSERT INTO "HERTZ_DEV"."EMPLEADO" (ID_EMPLEADO_PK, ID_CARGO_FK, SUELDO, DNI_PERSONA_FK, FECHA_INGRESO, CONTRASENIA) VALUES (N'KEV3421', N'1', '20000', N'0801200114133', TO_DATE('2020-04-16 21:04:03', 'YYYY-MM-DD HH24:MI:SS'), 'NINGUNA');
+
+INSERT INTO "HERTZ_DEV"."TRANSMISION" (ID_TRANSMISION_PK, TIPO_TRANSMISION) VALUES (N'1', 'MANUAL');
+INSERT INTO "HERTZ_DEV"."TRANSMISION" (ID_TRANSMISION_PK, TIPO_TRANSMISION) VALUES (N'2', 'AUTOMATICA');
+
+
+

@@ -1,0 +1,166 @@
+
+create or replace NONEDITIONABLE PROCEDURE REGISTRARMARCA(
+P_ID NCHAR,
+P_NOMBRE VARCHAR)
+IS
+BEGIN
+  INSERT INTO MARCA(ID_MARCA_PK,NOMBRE_MARCA)
+     VALUES (P_ID,P_NOMBRE);
+END;
+
+
+create or replace NONEDITIONABLE PROCEDURE REGISTRARVERSION(
+P_ID NCHAR,
+P_NOMBRE VARCHAR,
+P_ANIO NCHAR)
+IS
+BEGIN
+  INSERT INTO VERSION(ID_VERSION_PK,NOMBRE_VERSION,ANIO)
+     VALUES (P_ID,P_NOMBRE,P_ANIO);
+END;
+
+
+
+create or replace NONEDITIONABLE procedure seleccionarTiposVehiculos(registros out sys_refcursor,valor varchar)
+as
+Begin
+open registros for select count(flota.matricula_pk) as Cantidad, vehiculo.id_vehiculo_pk as id_vehiculo,marca.nombre_marca as marca,modelo.nombre_modelo as modelo
+,version.nombre_version as version, tipo_vehiculo.nombre_tipo_vehiculo as tipo_vehiculo,transmision.tipo_transmision as transmision,combustible.tipo_combustible as combustible
+,vehiculo.numero_puertas, vehiculo.costo_diario from FLOTA 
+INNER JOIN VEHICULO ON FLOTA.ID_VEHICULO_FK=vehiculo.id_vehiculo_pk
+INNER JOIN TRANSMISION ON vehiculo.transmision_fk=transmision.id_transmision_pk
+INNER JOIN COMBUSTIBLE ON vehiculo.combustible_fk=combustible.id_combustible_pk
+INNER JOIN VERSION ON vehiculo.version_fk=version.id_version_pk
+INNER JOIN MODELO   ON vehiculo.modelo_fk = modelo.id_modelo_pk
+INNER JOIN TIPO_VEHICULO ON vehiculo.tipo_vehiculo_fk=tipo_vehiculo.id_tipo_vehiculo_pk
+INNER JOIN MARCA ON vehiculo.id_marca_fk=marca.id_marca_pk
+where flota.disponibilidad='1' and (marca.nombre_marca like valor or modelo.nombre_modelo like valor
+or version.nombre_version like valor or tipo_vehiculo.nombre_tipo_vehiculo like valor or transmision.tipo_transmision like valor or 
+combustible.tipo_combustible like valor)
+group by (vehiculo.id_vehiculo_pk,marca.nombre_marca,modelo.nombre_modelo
+,version.nombre_version, tipo_vehiculo.nombre_tipo_vehiculo,transmision.tipo_transmision,combustible.tipo_combustible
+,vehiculo.numero_puertas, vehiculo.costo_diario) 
+order by vehiculo.costo_diario;
+
+end;
+
+
+
+create or replace NONEDITIONABLE procedure seleccionarFlota(registros out sys_refcursor,vehiculo varchar, cantidad int)
+as
+Begin
+open registros for 
+select flota.matricula_pk as matricula, marca.nombre_marca as marca,modelo.nombre_modelo as modelo
+,version.nombre_version as version, tipo_vehiculo.nombre_tipo_vehiculo as tipo_vehiculo,transmision.tipo_transmision as transmision,combustible.tipo_combustible as combustible
+,vehiculo.numero_puertas, vehiculo.costo_diario from FLOTA 
+INNER JOIN VEHICULO ON FLOTA.ID_VEHICULO_FK=vehiculo.id_vehiculo_pk
+INNER JOIN TRANSMISION ON vehiculo.transmision_fk=transmision.id_transmision_pk
+INNER JOIN COMBUSTIBLE ON vehiculo.combustible_fk=combustible.id_combustible_pk
+INNER JOIN VERSION ON vehiculo.version_fk=version.id_version_pk
+INNER JOIN MODELO   ON vehiculo.modelo_fk = modelo.id_modelo_pk
+INNER JOIN TIPO_VEHICULO ON vehiculo.tipo_vehiculo_fk=tipo_vehiculo.id_tipo_vehiculo_pk
+INNER JOIN MARCA ON vehiculo.id_marca_fk=marca.id_marca_pk
+where (flota.disponibilidad='1' and vehiculo.id_vehiculo_pk='1')
+order by flota.fecha_ingreso
+FETCH FIRST cantidad ROWS ONLY
+;
+
+
+end;
+
+
+
+create or replace NONEDITIONABLE PROCEDURE hacerReservacion(
+Pidreservacion nchar,Pcliente nchar,Pdeposito float,Pdevolucion nchar,Pretiro nchar,Pfecharetiro date,Pfechadevolucion date,Pestado nchar)
+IS
+BEGIN
+  insert into reservacion(id_reservacion_pk,id_cliente_fk,deposito,id_sucursal_devolucion_fk,id_sucursal_retiro_fk,fecha_retiro,fecha_devolucion,id_estado_reservacion_fk)
+values(Pidreservacion,Pcliente,Pdeposito,Pdevolucion,Pretiro,Pfecharetiro,Pfechadevolucion,Pestado);
+END;
+
+
+create or replace NONEDITIONABLE PROCEDURE ingresarDetallesReservacion(
+Pidreservacion nchar,Pmatricula nchar,Pidconductor nchar,Pestado nchar)
+IS
+BEGIN
+  insert into detalle_reservacion(id_reservacion_fk,id_matricula_flota_fk,id_conductor_fk,id_estado_vehiculo_fk)
+values(Pidreservacion,Pmatricula,Pidconductor,Pestado);
+END;
+
+
+create or replace NONEDITIONABLE procedure seleccionarTiposServicioAdicional(registros out sys_refcursor,valor varchar)
+as
+Begin
+open registros for select ID_TIPO_SERVICIO_ADICIONAL_PK as CODIGO,NOMBRE_TIPO_SERVICIO as NOMBRE,COSTO,DESCRIPCION from tipo_servicio_adicional
+where NOMBRE_TIPO_SERVICIO like valor;
+
+end;
+
+
+create or replace NONEDITIONABLE procedure seleccionarTiposServicioAdicionales(registros out sys_refcursor,valor varchar,cant nchar)
+as
+Begin
+open registros for select ID_TIPO_SERVICIO_ADICIONAL_PK as CODIGO,NOMBRE_TIPO_SERVICIO as NOMBRE,COSTO,DESCRIPCION,cant as cantidad from tipo_servicio_adicional
+where ID_TIPO_SERVICIO_ADICIONAL_PK=valor;
+
+end;
+
+
+create or replace NONEDITIONABLE PROCEDURE IngresarServiciosAdicionalesReserva(
+Pidreservacion nchar,Pservicio nchar,cantidad int)
+IS
+BEGIN
+INSERT INTO servicios_adicionales (
+    id_tipo_servicio_adicional_fk,
+    id_reservacion_fk,
+    cantidad
+) VALUES (
+    Pservicio,
+    Pidreservacion,
+    cantidad
+);
+
+END;
+
+create or replace NONEDITIONABLE PROCEDURE actualizarDisponibilidadFlota(Pmatricula NCHAR,Pdisponiblidad NCHAR)
+IS
+BEGIN
+  UPDATE FLOTA
+SET DISPONIBILIDAD = Pdisponiblidad
+WHERE MATRICULA_PK = Pmatricula;
+END;
+
+
+create or replace NONEDITIONABLE PROCEDURE actualizarFechaReservacion(Preservacion NCHAR, FDevolucion DATE)
+IS
+BEGIN
+  UPDATE RESERVACION
+  SET FECHA_DEVOLUCION=fdevolucion WHERE ID_RESERVACION_PK=preservacion;
+END;
+
+
+create or replace NONEDITIONABLE procedure seleccionarReservacion(registros out sys_refcursor,valor varchar)
+as
+Begin
+open registros for select reservacion.id_reservacion_pk,reservacion.deposito,reservacion.fecha_retiro,reservacion.fecha_devolucion,
+PERSONA.P_NOMBRE, PERSONA.S_NOMBRE, PERSONA.P_APELLIDO, PERSONA.S_APELLIDO, estado_reservacion.tipo_estado from RESERVACION 
+INNER JOIN estado_reservacion ON reservacion.id_estado_reservacion_fk=estado_reservacion.id_estado_reservacion_pk 
+INNER JOIN CLIENTE ON cliente.id_cliente_pk=reservacion.id_cliente_fk INNER JOIN PERSONA ON cliente.dni_persona_fk=persona.dni_persona_pk
+where (reservacion.id_estado_reservacion_fk='1' AND (PERSONA.P_NOMBRE LIKE valor  OR PERSONA.S_NOMBRE LIKE valor));
+
+
+end;
+
+create or replace NONEDITIONABLE procedure HacerFactura(Preservacion NCHAR,Estado NCHAR,IDFactura NCHAR,Retraso INT,Fecha DATE,Ptotal FLOAT,Pdevolucion FLOAT,Pcargo FLOAT)
+as
+Begin
+
+UPDATE RESERVACION
+SET ID_ESTADO_RESERVACION_FK = Estado
+WHERE ID_RESERVACION_PK=Preservacion;
+
+INSERT INTO FACTURA(ID_FACTURA_PK,DIAS_RETRASO,FECHA_EMISION,ID_RESERVACION_FK,TOTAL,DEVOLUCION_DEPOSITO,CARGO_COMBUSTIBLE)
+VALUES (IDFactura ,Retraso ,Fecha ,Preservacion,Ptotal ,Pdevolucion ,Pcargo);
+
+
+end;
