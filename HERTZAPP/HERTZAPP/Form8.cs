@@ -19,12 +19,8 @@ namespace HERTZAPP
 
         private void BTNCliente_Click(object sender, EventArgs e)
         {
-           
-        }
-
-        private void FRMReserva_Load(object sender, EventArgs e)
-        {
-
+            FRMElegirCliente fRMElegirCliente = new FRMElegirCliente();
+            fRMElegirCliente.Show();
         }
     }
 }

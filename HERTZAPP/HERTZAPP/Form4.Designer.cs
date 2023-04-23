@@ -49,7 +49,6 @@
             this.Controls.Add(this.BTNGestionarVehiculos);
             this.Name = "FRMMenuGerente";
             this.Text = "Menu del Gerente";
-            this.Load += new System.EventHandler(this.FRMMenuGerente_Load);
             this.ResumeLayout(false);
 
         }
