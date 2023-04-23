@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.OracleClient;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -12,9 +13,22 @@ namespace HERTZAPP
 {
     public partial class FRMIngresarCliente : Form
     {
-        public FRMIngresarCliente()
+
+
+
+        OracleConnection ConexionOracle;
+
+      
+
+        public FRMIngresarCliente(OracleConnection _ConexionOracle)
         {
             InitializeComponent();
+            ConexionOracle = _ConexionOracle;
+        }
+
+        private void FRMIngresarCliente_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }
