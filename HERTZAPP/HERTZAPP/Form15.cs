@@ -49,7 +49,7 @@ namespace HERTZAPP
 
         private void button2_Click(object sender, EventArgs e)
         {
-            FRMVehiculos fRMVehiculos = new FRMVehiculos(); 
+            FRMVehiculos fRMVehiculos = new FRMVehiculos(ConexionOracle); 
             fRMVehiculos.Show();
             this.Hide();
 

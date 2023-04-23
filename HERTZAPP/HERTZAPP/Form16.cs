@@ -66,7 +66,7 @@ namespace HERTZAPP
         {
             ConexionOracle.Open();
             string nombre = "%" + IDVehiculoTXT.Text + "%";
-            OracleCommand comando = new OracleCommand("seleccionarTiposVehiculos", ConexionOracle);
+            OracleCommand comando = new OracleCommand("GestionarTiposVehiculos", ConexionOracle);
             comando.CommandType = System.Data.CommandType.StoredProcedure;
             comando.Parameters.Add("registros", OracleType.Cursor).Direction = ParameterDirection.Output;
             comando.Parameters.Add("valor", OracleType.VarChar).Value = nombre;

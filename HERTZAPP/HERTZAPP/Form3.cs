@@ -14,9 +14,11 @@ namespace HERTZAPP
 {
     public partial class FRMAgregarTipoVehiculos : Form
     {
-        public FRMAgregarTipoVehiculos()
+        OracleConnection ConexionOracle;
+        public FRMAgregarTipoVehiculos(OracleConnection _ConexionOracle)
         {
             InitializeComponent();
+            ConexionOracle = _ConexionOracle;
         }
 
         private void label1_Click(object sender, EventArgs e)
@@ -24,8 +26,11 @@ namespace HERTZAPP
 
         }
 
+
+
+
         int contador;
-        OracleConnection ConexionOracle = new OracleConnection("DATA SOURCE=localhost:1521/xe;PASSWORD=CHD_111;USER ID=HERTZ_DEV;");
+       
 
         private void Form3_Load(object sender, EventArgs e)
         {
@@ -96,7 +101,7 @@ namespace HERTZAPP
             if(CMBMarca.SelectedItem.ToString()== "Agregar Marca....")
             {
                 contador = CMBMarca.Items.Count;
-                FRMIngresarDatos fRMIngresarDatos = new FRMIngresarDatos(contador, "REGISTRARMARCA", "P_ID", "P_NOMBRE","NINGUNO","MARCA", "NINGUNO");
+                FRMIngresarDatos fRMIngresarDatos = new FRMIngresarDatos(contador, "REGISTRARMARCA", "P_ID", "P_NOMBRE","NINGUNO","MARCA", "NINGUNO",ConexionOracle);
                 fRMIngresarDatos.ShowDialog();
                 CMBMarca.Items.Remove("Agregar Marca....");
                 CMBMarca.Items.Add(fRMIngresarDatos.retorno);
@@ -114,7 +119,7 @@ namespace HERTZAPP
             if (CMBVersion.SelectedItem.ToString() == "Agregar Version....")
             {
                 contador = CMBVersion.Items.Count;
-                FRMIngresarDatos fRMIngresarDatos = new FRMIngresarDatos(contador, "REGISTRARVERSION", "P_ID", "P_NOMBRE", "P_ANIO", "VERSION", "AÑO");
+                FRMIngresarDatos fRMIngresarDatos = new FRMIngresarDatos(contador, "REGISTRARVERSION", "P_ID", "P_NOMBRE", "P_ANIO", "VERSION", "AÑO", ConexionOracle);
                 fRMIngresarDatos.ShowDialog();
                 CMBVersion.Items.Remove("Agregar Version....");
                 CMBVersion.Items.Add(fRMIngresarDatos.retorno);

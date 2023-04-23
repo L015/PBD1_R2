@@ -170,3 +170,25 @@ BEGIN
   NULL;
 END REGISTRARVEHICULOFLOTA;
 
+
+create or replace NONEDITIONABLE procedure GestionarTiposVehiculos(registros out sys_refcursor,valor varchar)
+as
+Begin
+open registros for select  vehiculo.id_vehiculo_pk as id_vehiculo,marca.nombre_marca as marca,modelo.nombre_modelo as modelo
+,version.nombre_version as version, tipo_vehiculo.nombre_tipo_vehiculo as tipo_vehiculo,transmision.tipo_transmision as transmision,combustible.tipo_combustible as combustible
+,vehiculo.numero_puertas, vehiculo.costo_diario from vehiculo
+INNER JOIN TRANSMISION ON vehiculo.transmision_fk=transmision.id_transmision_pk
+INNER JOIN COMBUSTIBLE ON vehiculo.combustible_fk=combustible.id_combustible_pk
+INNER JOIN VERSION ON vehiculo.version_fk=version.id_version_pk
+INNER JOIN MODELO   ON vehiculo.modelo_fk = modelo.id_modelo_pk
+INNER JOIN TIPO_VEHICULO ON vehiculo.tipo_vehiculo_fk=tipo_vehiculo.id_tipo_vehiculo_pk
+INNER JOIN MARCA ON vehiculo.id_marca_fk=marca.id_marca_pk
+where  (marca.nombre_marca like valor or modelo.nombre_modelo like valor
+or version.nombre_version like valor or tipo_vehiculo.nombre_tipo_vehiculo like valor or transmision.tipo_transmision like valor or 
+combustible.tipo_combustible like valor)
+group by (vehiculo.id_vehiculo_pk,marca.nombre_marca,modelo.nombre_modelo
+,version.nombre_version, tipo_vehiculo.nombre_tipo_vehiculo,transmision.tipo_transmision,combustible.tipo_combustible
+,vehiculo.numero_puertas, vehiculo.costo_diario) 
+order by vehiculo.costo_diario;
+
+end;

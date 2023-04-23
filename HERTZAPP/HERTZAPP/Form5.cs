@@ -24,7 +24,12 @@ namespace HERTZAPP
         string _nombrep3;
         public string retorno { get; set; }
 
-        public FRMIngresarDatos(int contador,string procedimientoAlmacenado,string parametro1,string parametro2,string parametro3,string nombrep2,string nombrep3)
+
+        OracleConnection ConexionOracle;
+
+
+
+        public FRMIngresarDatos(int contador,string procedimientoAlmacenado,string parametro1,string parametro2,string parametro3,string nombrep2,string nombrep3, OracleConnection _ConexionOracle)
         {
             InitializeComponent();
             _contador = contador;
@@ -46,9 +51,11 @@ namespace HERTZAPP
                 label3.Text = _nombrep3;
                 TXTDato2.Visible = true;
             }
+
+            ConexionOracle = _ConexionOracle;
         }
 
-        OracleConnection ConexionOracle = new OracleConnection("DATA SOURCE=localhost:1521/xe;PASSWORD=CHD_111;USER ID=HERTZ_DEV;");
+      
 
         private void TXTDato_TextChanged(object sender, EventArgs e)
         {

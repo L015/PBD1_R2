@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Data.OracleClient;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -14,67 +15,77 @@ namespace HERTZAPP
 {
     public partial class FRMInicioSesion : Form
     {
+
         public FRMInicioSesion()
         {
             InitializeComponent();
         }
 
-        OracleConnection ConexionOracle = new OracleConnection("DATA SOURCE=localhost:1521/xe;PASSWORD=CHD_111;USER ID=HERTZ_DEV;");
+        public string cadenaConexion;
 
 
         private void BTNIniciarSesion_Click(object sender, EventArgs e)
         {
+            try
+            {
 
+             
+                cadenaConexion = "DATA SOURCE=localhost:1521/xe;PASSWORD=" + TXTPassword.Text + ";USER ID=" + TXTUsuario.Text + ";";
+                OracleConnection ConexionOracle = new OracleConnection(cadenaConexion);
 
-            ConexionOracle.Open();
-            string consulta = "select NOMBRECARGO from EMPLEADO INNER JOIN CARGO ON empleado.id_cargo_fk=cargo.id_cargo_pk WHERE (id_empleado_pk='" + TXTUsuario.Text + "' AND CONTRASENIA='"+ TXTPassword.Text+"')";
-            OracleCommand comando = new OracleCommand(consulta, ConexionOracle);
-            OracleDataReader lector;
-            lector = comando.ExecuteReader();
+                ConexionOracle.Open();
+                string consulta = "SELECT granted_role FROM dba_role_privs WHERE grantee = '" + TXTUsuario.Text + "'";
+                OracleCommand comando = new OracleCommand(consulta, ConexionOracle);
+                OracleDataReader lector;
+                lector = comando.ExecuteReader();
 
-           FRMMenuGerente fRMMenuGerente = new FRMMenuGerente();
-            FRMMenuVendedor fRMMenuVendedor = new FRMMenuVendedor();
+                FRMMenuGerente fRMMenuGerente = new FRMMenuGerente(ConexionOracle);
+            FRMMenuVendedor fRMMenuVendedor = new FRMMenuVendedor(ConexionOracle);
 
 
             if (lector.HasRows == true)
-            {
-                while (lector.Read())
                 {
-                    if (lector.GetString(0)=="VENDEDOR")
+                    while (lector.Read())
                     {
-                        MessageBox.Show("Sesion iniciada correctamente");
+                        if (lector.GetString(0) == "CAJERO")
+                        {
+                            MessageBox.Show("sesion iniciada correctamente");
+                        ConexionOracle.Close();
                         fRMMenuVendedor.Show();
                         this.Hide();
+                        break;
+
+                        }
+                        else if (lector.GetString(0) == "ALMACEN")
+                        {
+                            MessageBox.Show("le corresponde menu Almacen");
+                        }
+                        else if (lector.GetString(0) == "GERENTE")
+                        {
+                            MessageBox.Show("Sesion iniciada correctamente");
+                            ConexionOracle.Close();
+                            fRMMenuGerente.Show();
+                            this.Hide();
+                            break;
+                        }
+                        else
+                        {
+                            MessageBox.Show(lector.GetString(0));
+                        }
 
                     }
-                    else if(lector.GetString(0) == "ALMACEN")
-                    {
-                        MessageBox.Show("le corresponde menu Almacen");
-                    }
-                    else if (lector.GetString(0) == "GERENTE")
-                    {
-                        MessageBox.Show("Sesion iniciada correctamente");
-                        fRMMenuGerente.Show();
-                        this.Hide();
 
-                    }
-                    else
-                    {
-                        MessageBox.Show(lector.GetString(0));
-                    }
 
                 }
 
 
             }
-            else
+            catch (Exception ex)
             {
-                MessageBox.Show("contrasenia o usuario incorrecto");
+                MessageBox.Show("No se pudo iniciar sesion Nombre o contrasenia incorrecto");
             }
-            ConexionOracle.Close();
-
-
 
         }
     }
+
 }
