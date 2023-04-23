@@ -151,3 +151,22 @@ group by (vehiculo.id_vehiculo_pk,marca.nombre_marca,modelo.nombre_modelo
 order by vehiculo.costo_diario;
 
 end;
+
+create or replace NONEDITIONABLE PROCEDURE REGISTRARVEHICULOFLOTA(
+P_Matricula Nchar,
+P_Disponibilidad char,
+P_GPS varchar,
+P_Color varchar,
+P_Dirrecion_Almacen varchar,
+P_Fecha_Ingreso date,
+P_ID_Sucursal nchar,
+P_ID_Vehiculo NCHAR
+
+)
+is  
+BEGIN
+    insert into Flota(matricula_pk,disponibilidad,gps,color,direccion_almacen,fecha_ingreso,id_sucursal_fk,id_vehiculo_fk)
+    VALUES (P_Matricula,P_Disponibilidad,P_GPS,P_Color,P_Dirrecion_Almacen,P_Fecha_Ingreso,P_ID_Sucursal,P_ID_Vehiculo);
+  NULL;
+END REGISTRARVEHICULOFLOTA;
+
