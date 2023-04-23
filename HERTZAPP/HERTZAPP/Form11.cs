@@ -19,14 +19,16 @@ namespace HERTZAPP
 
         public bool botonCancelar2 { get; set; }
 
-        public FRMElegirServiciosAdicionales()
+        OracleConnection ConexionOracle;
+
+        
+        public FRMElegirServiciosAdicionales(OracleConnection _ConexionOracle)
         {
             InitializeComponent();
+            ConexionOracle = _ConexionOracle;
         }
 
-        OracleConnection ConexionOracle = new OracleConnection("DATA SOURCE=localhost:1521/xe;PASSWORD=CHD_111;USER ID=HERTZ_DEV;");
-
-
+        
         private void TXTBusqueda_TextChanged(object sender, EventArgs e)
         {
             

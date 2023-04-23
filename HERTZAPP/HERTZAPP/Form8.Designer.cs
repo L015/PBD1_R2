@@ -49,6 +49,7 @@
             this.Controls.Add(this.BTNCliente);
             this.Name = "FRMReserva";
             this.Text = "RESERVA";
+            this.Load += new System.EventHandler(this.FRMReserva_Load);
             this.ResumeLayout(false);
 
         }
