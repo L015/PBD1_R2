@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Data.OracleClient;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -13,32 +12,27 @@ namespace HERTZAPP
 {
     public partial class FRMVehiculos : Form
     {
-
-        OracleConnection ConexionOracle;
-        public FRMVehiculos(OracleConnection _ConexionOracle)
+        public FRMVehiculos()
         {
             InitializeComponent();
-            ConexionOracle = _ConexionOracle;
         }
-
-
-
-      
-
-       
-
-
 
         private void BTNVehiculos_Click(object sender, EventArgs e)
         {
-
+            GestionFlota form15 = new GestionFlota();
+            form15.Show();
         }
 
         private void BTNAgregar_Click(object sender, EventArgs e)
         {
-            FRMAgregarTipoVehiculos FormularioTipoVehiculos = new FRMAgregarTipoVehiculos(ConexionOracle);
+            FRMAgregarTipoVehiculos FormularioTipoVehiculos = new FRMAgregarTipoVehiculos();
             FormularioTipoVehiculos.Show();
             this.Hide();
+        }
+
+        private void FRMVehiculos_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

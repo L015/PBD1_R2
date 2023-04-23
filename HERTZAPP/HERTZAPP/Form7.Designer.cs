@@ -37,7 +37,6 @@
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Name = "FRMIngresarCliente";
             this.Text = "Form7";
-            this.Load += new System.EventHandler(this.FRMIngresarCliente_Load);
             this.ResumeLayout(false);
 
         }

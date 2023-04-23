@@ -20,17 +20,11 @@ namespace HERTZAPP
 
         public bool botonCancelar { get; set; }
 
-
-
-        OracleConnection ConexionOracle;
-
-
-        public FRMElegirAutomovil(OracleConnection _ConexionOracle)
+        public FRMElegirAutomovil()
         {
             InitializeComponent();
-            ConexionOracle = _ConexionOracle;
         }
-      
+        OracleConnection ConexionOracle = new OracleConnection("DATA SOURCE=localhost:1521/xe;PASSWORD=CHD_111;USER ID=HERTZ_DEV;");
        
 
         private void TXTBusqueda_TextChanged(object sender, EventArgs e)
@@ -41,7 +35,6 @@ namespace HERTZAPP
             comando.CommandType = System.Data.CommandType.StoredProcedure;
             comando.Parameters.Add("registros", OracleType.Cursor).Direction = ParameterDirection.Output;
             comando.Parameters.Add("valor", OracleType.VarChar).Value = nombre;
-            comando.ExecuteNonQuery();
 
             OracleDataAdapter adaptador = new OracleDataAdapter();
             adaptador.SelectCommand = comando;

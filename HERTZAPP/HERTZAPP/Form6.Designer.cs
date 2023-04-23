@@ -49,7 +49,6 @@
             this.Controls.Add(this.BTNNuevoCliente);
             this.Name = "FRMElegirCliente";
             this.Text = "ELEGIR CLIENTE";
-            this.Load += new System.EventHandler(this.FRMElegirCliente_Load);
             this.ResumeLayout(false);
 
         }

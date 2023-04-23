@@ -114,6 +114,7 @@
             this.Controls.Add(this.DataGridVehiculos);
             this.Name = "FRMVehiculos";
             this.Text = "Administrar Tipos de Vehiculos";
+            this.Load += new System.EventHandler(this.FRMVehiculos_Load);
             ((System.ComponentModel.ISupportInitialize)(this.DataGridVehiculos)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
