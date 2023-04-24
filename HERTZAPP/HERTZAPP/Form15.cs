@@ -12,12 +12,16 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace HERTZAPP
 {
-    public partial class GestionFlota : Form
-    {
-        OracleConnection ConexionOracle = new OracleConnection("DATA SOURCE=localhost:1521/xe;PASSWORD=CHD_111;USER ID=HERTZ_DEV;");
-        public GestionFlota()
+    public partial class GestionFlota : Form    {
+
+
+        OracleConnection ConexionOracle;
+
+
+        public GestionFlota(OracleConnection _ConexionOracle)
         {
             InitializeComponent();
+            ConexionOracle = _ConexionOracle;
         }
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
@@ -28,7 +32,7 @@ namespace HERTZAPP
 
         private void button1_Click(object sender, EventArgs e)
         {
-            Form16 form16 = new Form16();
+            Form16 form16 = new Form16(ConexionOracle);
             form16.Show();
         }
 
@@ -49,8 +53,7 @@ namespace HERTZAPP
 
         private void button2_Click(object sender, EventArgs e)
         {
-            FRMVehiculos fRMVehiculos = new FRMVehiculos(ConexionOracle); 
-            fRMVehiculos.Show();
+          
             this.Hide();
 
         }

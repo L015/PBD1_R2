@@ -37,5 +37,12 @@ namespace HERTZAPP
         {
 
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Form17 form17 = new Form17(ConexionOracle);
+            form17.Show();
+            this.Hide();
+        }
     }
 }

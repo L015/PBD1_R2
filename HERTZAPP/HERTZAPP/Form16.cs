@@ -13,13 +13,17 @@ namespace HERTZAPP
 {
     public partial class Form16 : Form
     {
-        
-        public Form16()
+
+
+        OracleConnection ConexionOracle;
+
+
+        public Form16(OracleConnection _ConexionOracle)
         {
             InitializeComponent();
+            ConexionOracle = _ConexionOracle;
         }
 
-        OracleConnection ConexionOracle = new OracleConnection("DATA SOURCE=localhost:1521/xe;PASSWORD=CHD_111;USER ID=HERTZ_DEV;");
         string[] idSucursal1;
 
         private void textBox2_TextChanged(object sender, EventArgs e)

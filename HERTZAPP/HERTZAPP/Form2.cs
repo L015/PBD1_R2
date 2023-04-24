@@ -31,7 +31,7 @@ namespace HERTZAPP
 
         private void BTNVehiculos_Click(object sender, EventArgs e)
         {
-            GestionFlota form15 = new GestionFlota();
+            GestionFlota form15 = new GestionFlota(ConexionOracle);
             form15.Show();
         }
 
